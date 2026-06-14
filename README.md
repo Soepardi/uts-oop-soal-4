@@ -1,4 +1,4 @@
-# 🏍️ Aplikasi Penjualan Motor (UNSIA Dealer Motor)
+# Aplikasi Penjualan Motor (UNSIA Dealer Motor)
 
 Proyek ini dibuat untuk memenuhi tugas **Ujian Tengah Semester (UTS)**.
 
