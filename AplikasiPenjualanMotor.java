@@ -5,7 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 
-// --- Object-Oriented Domain Classes ---
+
 
 class Motor {
     private String merk;
@@ -98,9 +98,10 @@ public class AplikasiPenjualanMotor extends JFrame {
     private JTextField txtHarga;
     private JComboBox<String> cbPembayaran;
     private JButton btnHitung;
-    private JTextField txtDiskon; // Backward Compatibility for UTS grader
-    private JTextField txtTotalBayar; // Backward Compatibility for UTS grader
+    private JTextField txtDiskon;
+    private JTextField txtTotalBayar;
     private JButton btnHitungLagi, btnSelesai;
+    private JButton btnBayar;
 
     // Modern Graphical Receipt Labels
     private JLabel lblReceiptNo;
@@ -114,7 +115,7 @@ public class AplikasiPenjualanMotor extends JFrame {
 
     public AplikasiPenjualanMotor() {
         // Setup Window JFrame
-        setTitle("APLIKASI KASIR DEALER MOTOR");
+        setTitle("APLIKASI PENJUALAN MOTOR");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(true);
         setMinimumSize(new Dimension(1280, 720));
@@ -169,7 +170,7 @@ public class AplikasiPenjualanMotor extends JFrame {
         // 2a. Left Panel: Input Data Form
         JPanel panelDataMotor = new JPanel(new GridBagLayout());
         panelDataMotor.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEtchedBorder(), "FORM INPUT TRANSAKSI",
+                BorderFactory.createEtchedBorder(), "DATA PEMBELIAN",
                 TitledBorder.LEFT, TitledBorder.TOP,
                 new Font("SansSerif", Font.BOLD, 14) // Larger border font
         ));
@@ -254,25 +255,53 @@ public class AplikasiPenjualanMotor extends JFrame {
         cbPembayaran.setFont(new Font("SansSerif", Font.PLAIN, 14));
         panelDataMotor.add(cbPembayaran, c);
 
-        // Row 5: Action Button (Hitung)
-        c.gridx = 0; c.gridy = 5; c.gridwidth = 2; c.weightx = 1.0;
-        c.insets = new Insets(25, 20, 15, 20);
-        btnHitung = new JButton("HITUNG TRANSAKSI");
-        btnHitung.setFont(new Font("SansSerif", Font.BOLD, 14));
-        btnHitung.setPreferredSize(new Dimension(btnHitung.getPreferredSize().width, 40));
-        btnHitung.putClientProperty("JButton.buttonType", "accent");
-        panelDataMotor.add(btnHitung, c);
+        // Row 5: Diskon
+        c.gridx = 0; c.gridy = 5; c.weightx = 0.3;
+        JLabel lblDiskon = new JLabel("Diskon");
+        lblDiskon.setFont(new Font("SansSerif", Font.BOLD, 13));
+        panelDataMotor.add(lblDiskon, c);
 
-        // Required hidden fields for grading/automated test compatibility
+        c.gridx = 1; c.weightx = 0.7;
         txtDiskon = new JTextField();
-        txtDiskon.setVisible(false);
-        txtTotalBayar = new JTextField();
-        txtTotalBayar.setVisible(false);
-        panelDataMotor.add(txtDiskon);
-        panelDataMotor.add(txtTotalBayar);
+        txtDiskon.setEditable(false);
+        txtDiskon.setHorizontalAlignment(JTextField.RIGHT);
+        txtDiskon.setFont(new Font("SansSerif", Font.BOLD, 14));
+        panelDataMotor.add(txtDiskon, c);
 
-        // Row 6: Vertical spacer to align components to top
-        c.gridx = 0; c.gridy = 6; c.gridwidth = 2; c.weighty = 1.0;
+        // Row 6: Total Bayar
+        c.gridx = 0; c.gridy = 6; c.weightx = 0.3;
+        JLabel lblTotalBayar = new JLabel("Total Bayar");
+        lblTotalBayar.setFont(new Font("SansSerif", Font.BOLD, 13));
+        panelDataMotor.add(lblTotalBayar, c);
+
+        c.gridx = 1; c.weightx = 0.7;
+        txtTotalBayar = new JTextField();
+        txtTotalBayar.setEditable(false);
+        txtTotalBayar.setHorizontalAlignment(JTextField.RIGHT);
+        txtTotalBayar.setFont(new Font("SansSerif", Font.BOLD, 14));
+        panelDataMotor.add(txtTotalBayar, c);
+
+        // Row 7: Action Buttons (Hitung & Bayar)
+        c.gridx = 0; c.gridy = 7; c.gridwidth = 2; c.weightx = 1.0;
+        c.insets = new Insets(25, 20, 15, 20);
+        JPanel panelButtons = new JPanel(new GridLayout(1, 2, 10, 0));
+        
+        btnHitung = new JButton("HITUNG");
+        btnHitung.setFont(new Font("SansSerif", Font.BOLD, 14));
+        btnHitung.setPreferredSize(new Dimension(0, 40));
+        btnHitung.putClientProperty("JButton.buttonType", "accent");
+        
+        btnBayar = new JButton("BAYAR");
+        btnBayar.setFont(new Font("SansSerif", Font.BOLD, 14));
+        btnBayar.setPreferredSize(new Dimension(0, 40));
+        btnBayar.putClientProperty("JButton.buttonType", "accent");
+
+        panelButtons.add(btnHitung);
+        panelButtons.add(btnBayar);
+        panelDataMotor.add(panelButtons, c);
+
+        // Row 8: Vertical spacer to align components to top
+        c.gridx = 0; c.gridy = 8; c.gridwidth = 2; c.weighty = 1.0;
         c.fill = GridBagConstraints.BOTH;
         panelDataMotor.add(Box.createVerticalGlue(), c);
 
@@ -281,7 +310,7 @@ public class AplikasiPenjualanMotor extends JFrame {
         // 2b. Right Panel: Modern Graphical Receipt Card Container
         JPanel receiptContainer = new JPanel(new GridBagLayout());
         receiptContainer.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createEtchedBorder(), "PREVIEW STRUK KASIR",
+                BorderFactory.createEtchedBorder(), "STRUK PEMBELIAN",
                 TitledBorder.LEFT, TitledBorder.TOP,
                 new Font("SansSerif", Font.BOLD, 14)
         ));
@@ -558,6 +587,14 @@ public class AplikasiPenjualanMotor extends JFrame {
             }
         });
 
+        // "BAYAR" Action Listener
+        btnBayar.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                bayarTransaksi();
+            }
+        });
+
         // "HITUNG LAGI" Action Listener
         btnHitungLagi.addActionListener(new ActionListener() {
             @Override
@@ -660,7 +697,30 @@ public class AplikasiPenjualanMotor extends JFrame {
             double diskon = transaksi.hitungDiskon();
             double total = transaksi.hitungTotalBayar();
 
-            // Update required text fields in the background for automated grader compatibility
+            txtDiskon.setText(formatRupiah(diskon));
+            txtTotalBayar.setText(formatRupiah(total));
+        }
+    }
+
+    private void bayarTransaksi() {
+        String nama = txtNama.getText().trim();
+        if (nama.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nama Pembeli tidak boleh kosong!", "Peringatan", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        String merk = (String) cbMerk.getSelectedItem();
+        String jenis = getSelectedJenis();
+        String pembayaran = (String) cbPembayaran.getSelectedItem();
+
+        if (merk != null && !jenis.isEmpty() && pembayaran != null) {
+            Motor motor = new Motor(merk, jenis);
+            Transaksi transaksi = new Transaksi(nama, motor, pembayaran);
+
+            double diskon = transaksi.hitungDiskon();
+            double total = transaksi.hitungTotalBayar();
+
+            // Populate text fields in case they weren't calculated yet
             txtDiskon.setText(formatRupiah(diskon));
             txtTotalBayar.setText(formatRupiah(total));
 

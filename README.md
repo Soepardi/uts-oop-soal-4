@@ -1,126 +1,56 @@
-# Dokumentasi Sistem Aplikasi Penjualan Motor
+# 🏍️ Aplikasi Penjualan Motor (UNSIA Dealer Motor)
 
-## Deskripsi Program
-`AplikasiPenjualanMotor.java` adalah aplikasi berbasis Java Swing yang dirancang untuk mensimulasikan sistem kasir pada dealer motor. Program ini menggunakan antarmuka grafis (GUI) modern dengan desain layout yang responsif dan memanfaatkan *library* **FlatLaf** (apabila tersedia) untuk memberikan tampilan estetis dan profesional. 
+Proyek ini dibuat untuk memenuhi tugas **Ujian Tengah Semester (UTS)**.
 
-Fitur utama aplikasi mencakup:
-- Input data transaksi: nama pembeli, merk motor, jenis motor, dan metode pembayaran.
-- Perhitungan harga otomatis berdasarkan kombinasi merk dan jenis motor.
-- Perhitungan diskon secara otomatis berdasarkan metode pembayaran (Tunai atau Kredit).
-- Pratinjau "Struk Kasir" secara *real-time* yang menampilkan rincian transaksi layaknya sistem Point of Sale (POS) modern.
+---
 
-## Analisis Komponen Utama dan Cuplikan Kode
+## Identitas Mahasiswa
 
-Program ini dibangun menggunakan konsep *Object-Oriented Programming* (OOP) yang memisahkan logika bisnis dengan antarmuka pengguna. Berikut adalah analisis komponen-komponen utamanya:
+*   **Nama:** Supardi Akhiyat
+*   **NIM:** 230101010026
 
-### 1. Kelas `Motor` (Domain Object)
-Kelas ini bertanggung jawab untuk merepresentasikan entitas motor, menyimpan atribut `merk` dan `jenis`, serta memiliki logika untuk menentukan harga dasar kendaraan.
+---
 
-**Cuplikan Kode: Penentuan Harga Motor**
-```java
-class Motor {
-    private String merk;
-    private String jenis;
-    private double harga;
+## Prasyarat Sistem (Prerequisites)
+Sebelum menjalankan aplikasi, pastikan sistem Anda telah terpasang:
+*   **Java Development Kit (JDK)** versi 8 atau yang lebih baru.
+*   Terminal / Command Prompt / PowerShell.
 
-    public Motor(String merk, String jenis) {
-        this.merk = merk;
-        this.jenis = jenis;
-        this.harga = hitungHarga();
-    }
+---
 
-    private double hitungHarga() {
-        if (merk.equalsIgnoreCase("HONDA")) {
-            if (jenis.equalsIgnoreCase("BEBEK")) return 12000000;
-            if (jenis.equalsIgnoreCase("SPORT")) return 32000000;
-            if (jenis.equalsIgnoreCase("MATIK")) return 15000000;
-        } else if (merk.equalsIgnoreCase("YAMAHA")) {
-            if (jenis.equalsIgnoreCase("BEBEK")) return 13500000;
-            // ... (logika lainnya)
-        }
-        // ...
-        return 0;
-    }
-    // getters
-}
+## Struktur File Penting
+Untuk memastikan program berjalan dengan lancar (termasuk aset gambar dan pustaka UI), pastikan file-file berikut berada dalam direktori yang sama:
+*   `AplikasiPenjualanMotor.java` — Source code utama program.
+*   `flatlaf-3.7.1.jar` — Pustaka tampilan UI modern (FlatLaf).
+*   `logo.png` — Logo dealer yang digunakan pada *header* aplikasi dan ikon jendela.
+
+---
+
+## Cara Menginstal & Menjalankan Aplikasi
+
+Ikuti langkah-langkah di bawah ini untuk mengompilasi dan menjalankan program melalui terminal:
+
+### 1. Buka Terminal / Command Prompt
+Arahkan direktori terminal ke folder tempat file proyek ini disimpan. Contoh:
+```bash
+cd "D:\Kuliah\semester 6\Pemrograman Berbasis Object\UTS\Soal 4"
 ```
 
-### 2. Kelas `Transaksi` (Business Logic)
-Kelas ini menangani proses kalkulasi transaksi, mencakup perhitungan diskon berdasarkan merk motor dan metode pembayaran, serta menghitung total yang harus dibayar.
-
-**Cuplikan Kode: Logika Perhitungan Diskon**
-```java
-class Transaksi {
-    private String namaPembeli;
-    private Motor motor;
-    private String pembayaran;
-
-    // constructor & getters...
-
-    public double hitungDiskon() {
-        double harga = motor.getHarga();
-        if (pembayaran.equalsIgnoreCase("TUNAI")) {
-            return 0.20 * harga; // Diskon tunai: 20%
-        } else if (pembayaran.equalsIgnoreCase("KREDIT")) {
-            String merk = motor.getMerk();
-            double pct = 0;
-            if (merk.equalsIgnoreCase("HONDA")) pct = 0.08;
-            else if (merk.equalsIgnoreCase("YAMAHA")) pct = 0.07;
-            else if (merk.equalsIgnoreCase("SUZUKI")) pct = 0.06;
-            else if (merk.equalsIgnoreCase("KAWASAKI")) pct = 0.05;
-            return pct * harga;
-        }
-        return 0;
-    }
-
-    public double hitungTotalBayar() {
-        return motor.getHarga() - hitungDiskon();
-    }
-}
+### 2. Kompilasi Program (Compile)
+Kompilasikan kode program Java dengan menyertakan pustaka `flatlaf` ke dalam *classpath*:
+```bash
+javac -cp flatlaf-3.7.1.jar AplikasiPenjualanMotor.java
 ```
+*Perintah di atas akan menghasilkan file `.class` dari kode Java.*
 
-### 3. Kelas `AplikasiPenjualanMotor` (Main GUI)
-Ini adalah kelas utama (turunan dari `JFrame`) yang mengatur seluruh tampilan antarmuka dan *event handling*. Antarmuka dirancang dengan paradigma responsif dengan membagi layar menjadi sisi kiri (Formulir) dan kanan (Pratinjau Struk).
+### 3. Jalankan Aplikasi (Run)
+Jalankan program berdasarkan sistem operasi yang Anda gunakan:
 
-**Cuplikan Kode: Event Listener & Update Real-time**
-```java
-// Event Listener untuk tombol Hitung
-btnHitung.addActionListener(new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        hitungTransaksi();
-    }
-});
-
-// Auto-update harga di form ketika Merk atau Jenis diubah
-cbMerk.addActionListener(new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        updateHargaField();
-    }
-});
-```
-
-**Cuplikan Kode: Integrasi UI Modern dengan FlatLaf (Menggunakan Reflection)**
-```java
-public static void main(String[] args) {
-    // Memuat FlatLaf Look and Feel secara dinamis untuk menghindari error kompilasi jika library tidak ada
-    try {
-        Class<?> clazz = Class.forName("com.formdev.flatlaf.FlatIntelliJLaf");
-        java.lang.reflect.Method setupMethod = clazz.getMethod("setup");
-        setupMethod.invoke(null);
-    } catch (Exception ex) {
-        System.err.println("Gagal memuat FlatLaf Look and Feel. Menggunakan default sistem.");
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception ignored) {}
-    }
-
-    SwingUtilities.invokeLater(() -> new AplikasiPenjualanMotor().setVisible(true));
-}
-```
-
-## Keunggulan Kode
-1. **Pemisahan Peran (Separation of Concerns):** Logika kalkulasi harga dan transaksi dipisah dari kelas antarmuka grafis, membuat kode lebih rapi dan dapat di-*maintain*.
-2. **Fleksibilitas (Dynamic UI Loading):** Penggunaan Reflection untuk memanggil `FlatLaf` membuat program tidak langsung *crash* jika library eksternal hilang, dan dapat beralih ke Look and Feel bawaan sistem secara otomatis.
-3. **Desain Antarmuka Estetis:** Implementasi desain Struk (*Receipt Card*) dengan `GridBagLayout` memberikan tampilan seperti program POS modern.
+*   **Windows (Command Prompt / PowerShell):**
+    ```cmd
+    java -cp ".;flatlaf-3.7.1.jar" AplikasiPenjualanMotor
+    ```
+*   **Linux / macOS (Terminal):**
+    ```bash
+    java -cp ".:flatlaf-3.7.1.jar" AplikasiPenjualanMotor
+    ```
